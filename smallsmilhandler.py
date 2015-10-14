@@ -14,49 +14,37 @@ class SmallSMILHandler(ContentHandler):
         """
         Constructor. Inicializamos las variables
         """
-        self.width = ""
-        self.height = ""
-        self.bground_color = ""
-        self.id = ""
-        self.top = ""
-        self.bottom = ""
-        self.left = ""
-        self.right = ""
-        self.src = ""
-        self.begin = ""
-        self.dur = ""
-        self.region = ""
+        self.lista = []
+        self.dic = {"root-layout": ['height', 'width', 'background-color'],
+                    "region": ['id', 'top', 'bottom', 'left', 'right'],
+                    "img": ['src', 'region', 'begin', 'dur'],
+                    "audio": ['src', 'begin', 'dur'],
+                    "textstream": ['src', 'region']}
 
     def startElement(self, name, attrs):
         """
         Método que el parsel llama cuando se encuentra una etiqueta de inicio
         """
-        if name == "root-layout":
-            self.width = attrs.get('width', "")
-            self.height = attrs.get('height', "")
-            self.bground_color = attrs.get('background-color', "")
+        if name in self.dic:
+            self.atributos = {}
+            for item in self.dic[name]:
+                self.atributos[item] = attrs.get(item, "")
+            self.crear_lista(name, self.atributos)
 
-        elif name == "region":
-            self.id = attrs.get('id', "")
-            self.top = attrs.get('top', "")
-            self.bottom = attrs.get('bottom', "")
-            self.left = attrs.get('left', "")
-            self.right = attrs.get('rigth', "")
+    def get_tags(self):
+        return self.lista
 
-        elif name == "img":
-            self.src = attrs.get('src', "")
-            self.begin = attrs.get('begin', "")
-            self.dur = attrs.get('dur', "")
-            self.region = attrs.get('region', "")
+    def crear_lista(self, nombre, atributos):
+        etiqueta = []
+        etiqueta.append(nombre)
+        etiqueta.append(atributos)
+        self.lista.append(etiqueta)
+        return self.lista
 
-        elif name == "audio":
-            self.src = attrs.get('src', "")
-            self.begin = attrs.get('begin', "")
-            self.dur = attrs.get('dur', "")
 
-        elif name == "textstream":
-            self.src = attrs.get('src', "")
-            self.region = attrs.get('region', "")
+def print_list(list):
+    for element in list:
+        print(element)
 
 if __name__ == "__main__":
     """
@@ -66,3 +54,4 @@ if __name__ == "__main__":
     cHandler = SmallSMILHandler()
     parser.setContentHandler(cHandler)
     parser.parse(open("karaoke.smil"))
+    print_list(cHandler.get_tags())
