@@ -16,14 +16,28 @@ def abrirfichero():
     except FileNotFoundError:
         sys.exit("Not file with this name")
 
+
+def get_list(fich):
+    parser = make_parser()
+    cHandler = SmallSMILHandler()
+    parser.setContentHandler(cHandler)
+    parser.parse(fich)
+    list = cHandler.get_tags()
+    return list
+
+
 def print_list(lista):
-    pass
+    linea = ""
+    for elem in lista:
+        linea = linea + elem[0]
+        atributos = elem[1].items()
+        for nombre, valor in atributos:
+            linea = linea + '\t' + nombre + ' = ' + '"' + valor + '"'
+        linea = linea + '\n'
+    print (linea)
 
 
 if __name__ == '__main__':
     fichero = abrirfichero()
-    parser = make_parser()
-    cHandler = SmallSMILHandler()
-    parser.setContentHandler(cHandler)
-    parser.parse(fichero)
-    print(cHandler.get_tags())
+    lista = get_list(fichero)
+    print_list(lista)
