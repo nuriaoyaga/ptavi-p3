@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import json
 from smallsmilhandler import SmallSMILHandler
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
@@ -37,7 +38,13 @@ def print_list(lista):
     print (linea)
 
 
+def to_json(list):
+    with open('karaoke.json', 'w') as fichero_json:
+        json.dump(list, fichero_json, sort_keys=True, indent=4, separators=(' ', ': '))
+
+
 if __name__ == '__main__':
     fichero = abrirfichero()
     lista = get_list(fichero)
     print_list(lista)
+    to_json(lista)
