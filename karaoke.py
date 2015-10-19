@@ -15,7 +15,7 @@ class KaraokeLocal(SmallSMILHandler):
         parser = make_parser()
         cHandler = SmallSMILHandler()
         parser.setContentHandler(cHandler)
-        parser.parse(fichero)
+        parser.parse(open(fichero))
         self.datos = cHandler.get_tags()
 
     def __str__(self):
@@ -29,10 +29,11 @@ class KaraokeLocal(SmallSMILHandler):
         return linea
 
     def to_json(self, fichsmil, new=''):
-        """if new == '':
-            new = fichsmil.split('.')[0] + '.json'"""
+        if new == '':
+            new = fichsmil.split('.')[0] + '.json'
         with open(new, 'w') as fichero_json:
-            json.dump(self.datos, fichero_json, sort_keys=True, indent=4, separators=(' ', ': '))
+            json.dump(self.datos, fichero_json, sort_keys=True,
+                      indent=4, separators=(' ', ': '))
 
     def do_local(self):
         for elem in self.datos:
@@ -47,9 +48,9 @@ class KaraokeLocal(SmallSMILHandler):
                 pass
 
 
-def abrirfichero():
+def get_fichero():
     try:
-        fich = open(sys.argv[1], 'r')
+        fich = sys.argv[1]
         return fich
     except IndexError:
         sys.exit("Usage: python3 karaoke.py file.smil.")
@@ -58,10 +59,9 @@ def abrirfichero():
 
 
 if __name__ == '__main__':
-    fichero = abrirfichero()
-    print(fichero)
+    fichero = get_fichero()
     karaoke = KaraokeLocal(fichero)
     print(karaoke)
-    #karaoke.to_json(fichero)
+    karaoke.to_json(fichero)
     karaoke.do_local()
     karaoke.to_json(fichero, 'local.json')
