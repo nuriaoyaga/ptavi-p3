@@ -3,6 +3,7 @@
 
 import sys
 import json
+import urllib
 from smallsmilhandler import SmallSMILHandler
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
@@ -43,8 +44,22 @@ def to_json(list):
         json.dump(list, fichero_json, sort_keys=True, indent=4, separators=(' ', ': '))
 
 
+def do_local(list):
+    for elem in list:
+        atributos = elem[1]
+        try:
+            url = atributos['src']
+            if url != "cancion.ogg":
+                filename = url[url.rfind("/") + 1:]
+                data = urllib.request.urlretrieve(url, filename)
+                atributos['src'] = "http://" + data[0]
+        except KeyError as e:
+            pass
+
+
 if __name__ == '__main__':
     fichero = abrirfichero()
     lista = get_list(fichero)
     print_list(lista)
     to_json(lista)
+    do_local(lista)
