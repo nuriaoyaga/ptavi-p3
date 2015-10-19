@@ -65,3 +65,4 @@ if __name__ == '__main__':
     karaoke.to_json(fichero)
     karaoke.do_local()
     karaoke.to_json(fichero, 'local.json')
+    print(karaoke)
